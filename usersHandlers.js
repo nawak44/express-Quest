@@ -14,11 +14,16 @@ const getUsers = (req, res) => {
 
 const getUsersById = (req, res) => {
   const id = parseInt(req.params.id);
+  //const user ;
 
   database
-    .query("select * from movies where id = ?", [id])
-    .then(([users]) => {
-      res.json(users);
+    .query("select * from users where id = ?", [id])
+    .then(([data]) => {
+      if (data[0] != undefined) {
+        res.status(200).json(data[0]);
+      } else {
+        res.status(404).send("Not Found");
+      }
     })
     .catch((err) => {
       console.error(err);
