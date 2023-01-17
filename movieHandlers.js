@@ -69,8 +69,32 @@ const postMovie = (req, res) => {
       res.status(500).send("Error saving the movie");
     });
 };
+
+const updateMovie = (req, res) => {
+  const id = parseInt(req.params.id);
+  const { title, director, year, color, duration } = req.body;
+  database
+    .query(
+      "update movies set title = ?, director = ?, year = ?, color = ?, duration = ? where id = ?",
+      [title, director, year, color, duration, id]
+    )
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.status(404).send("Not my Found");
+      } else {
+        res.status(204).send("updated");
+        //res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error editing the movie");
+    });
+};
+
 module.exports = {
   getMovies,
   getMovieById,
   postMovie, // don't forget to export your function ;)
+  updateMovie,
 };
