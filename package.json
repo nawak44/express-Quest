@@ -21,6 +21,7 @@
   "homepage": "https://github.com/WildCodeSchool/Express-Quests#readme",
   "dependencies": {
     "dotenv": "^16.0.3",
+    "eslint": "^8.32.0",
     "express": "^4.18.1",
     "mysql2": "^3.0.1"
   },
