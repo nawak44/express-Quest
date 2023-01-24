@@ -1,4 +1,5 @@
 const database = require("./database");
+
 /*
 const getUsers = (req, res) => {
   database
@@ -80,7 +81,7 @@ const postUsers = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).send("Error saving the movie");
+      res.status(500).send("Error saving the users");
     });
 };
 
