@@ -55,7 +55,10 @@ const getUsersById = (req, res) => {
   const id = parseInt(req.params.id);
   //const user ;
   database
-    .query("select * from users where id = ?", [id])
+    .query(
+      "select firstname, lastname, email, city, language from users where id = ?",
+      [id]
+    )
     .then(([data]) => {
       if (data[0] != undefined) {
         res.status(200).json(data[0]);
