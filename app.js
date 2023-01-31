@@ -1,6 +1,6 @@
 const express = require("express");
 const { validateMovie, validateUser } = require("./validators.js");
-const { hashPassword } = require("./auth.js");
+const { hashPassword, verifyPassword, verifyToken } = require("./auth"); // don't forget to import
 
 const app = express();
 
@@ -22,15 +22,22 @@ app.get("/api/movies/:id", movieHandlers.getMovieById);
 app.get("/api/users", usersHandlers.getUsers);
 app.get("/api/users/:id", usersHandlers.getUsersById);
 
-//app.post("/api/movies", movieHandlers.postMovie);
-app.post("/api/movies", validateMovie, movieHandlers.postMovie);
+app.post(
+  "/api/login",
+  usersHandlers.getUserByEmailWithPasswordAndPassToNext,
+  verifyPassword
+); // /!\ login should be a public route
+
 app.post("/api/users", validateUser, hashPassword, usersHandlers.postUsers);
 
-app.put("/api/movies/:id", movieHandlers.updateMovie);
-app.put("/api/users/:id", validateUser, hashPassword, usersHandlers.updateUser);
+// then the routes to protect
+app.use(verifyToken); // authentication wall : verifyToken is activated for each route after this line
 
-app.delete("/api/movies/:id", movieHandlers.deleteMovie);
+app.put("/api/users/:id", validateUser, hashPassword, usersHandlers.updateUser);
 app.delete("/api/users/:id", usersHandlers.deleteUser);
+app.post("/api/movies", movieHandlers.postMovie);
+app.put("/api/movies/:id", movieHandlers.updateMovie);
+app.delete("/api/movies/:id", movieHandlers.deleteMovie);
 
 app.listen(port, (err) => {
   if (err) {

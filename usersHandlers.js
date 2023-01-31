@@ -94,7 +94,7 @@ const updateUser = (req, res) => {
   const id = parseInt(req.params.id, 10);
   const { firstname, lastname, email, city, language, hashedPassword } =
     req.body;
-  console.log(req.body);
+  console.log("corps de la requete", req.body);
   database
     .query(
       "update users set firstname = ?, lastname = ?, email = ?, city = ?, language = ? , hashedPassword=? where id = ?",
@@ -131,10 +131,31 @@ const deleteUser = (req, res) => {
     });
 };
 
+const getUserByEmailWithPasswordAndPassToNext = (req, res, next) => {
+  const email = req.body.email;
+  console.log("mon email", email);
+
+  database
+    .query("select * from users where email = ?", [email])
+    .then(([users]) => {
+      if (users[0] != null) {
+        req.user = users[0];
+        next();
+      } else {
+        res.sendStatus(401);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error retrieving data from database");
+    });
+};
+
 module.exports = {
   getUsers,
   getUsersById,
   postUsers,
   updateUser,
   deleteUser,
+  getUserByEmailWithPasswordAndPassToNext,
 };
